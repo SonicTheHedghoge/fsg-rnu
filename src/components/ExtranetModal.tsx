@@ -11,6 +11,7 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [activeSemester, setActiveSemester] = useState<'S1' | 'S2'>('S2');
 
   if (!isOpen) return null;
 
@@ -33,57 +34,55 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
     onClose();
   };
 
-  const rawGradesData = [
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'LOGIQUE FORMELLE', c8: 'LGLSI A TD1 TP1', grade: '3.0', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'LOGIQUE FORMELLE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'LOGIQUE FORMELLE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'LOGIQUE FORMELLE', c8: 'LGLSI A TD1 TP1', grade: '3.00', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F8A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'SYSTEME D’EXPLOITATION 1', c8: 'LGLSI A TD1 TP1', grade: '2.5', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F8A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'SYSTEME D’EXPLOITATION 1', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F8A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'SYSTEME D’EXPLOITATION 1', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F8A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'SYSTEME D’EXPLOITATION 1', c8: 'LGLSI A TD1 TP1', grade: '2.50', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F9A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', c8: 'LGLSI A TD1 TP1', grade: '3.5', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F9A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F9A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F9A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', c8: 'LGLSI A TD1 TP1', grade: '3.50', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'ANALYSE', c8: 'LGLSI A TD1 TP1', grade: '16.0', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'ANALYSE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'ANALYSE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F1A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'ANALYSE', c8: 'LGLSI A TD1 TP1', grade: '16.00', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F2A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'ALGEBRE', c8: 'LGLSI A TD1 TP1', grade: '17.5', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F2A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'ALGEBRE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F2A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'ALGEBRE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F2A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'ALGEBRE', c8: 'LGLSI A TD1 TP1', grade: '17.50', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F3A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'PROGRAMMATION', c8: 'LGLSI A TD1 TP1', grade: '17.0', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F3A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'PROGRAMMATION', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F3A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'PROGRAMMATION', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F3A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'PROGRAMMATION', c8: 'LGLSI A TD1 TP1', grade: '17.00', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F4A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'ANGLAIS', c8: 'LGLSI A TD1 TP1', grade: '17.0', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F4A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'ANGLAIS', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F4A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'ANGLAIS', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F4A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'ANGLAIS', c8: 'LGLSI A TD1 TP1', grade: '17.00', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F5A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'TECHNIQUES DE COMMUNICATION', c8: 'LGLSI A TD1 TP1', grade: '14.5', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F5A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'TECHNIQUES DE COMMUNICATION', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F5A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'TECHNIQUES DE COMMUNICATION', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F5A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'TECHNIQUES DE COMMUNICATION', c8: 'LGLSI A TD1 TP1', grade: '14.50', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F6A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'MULTIMEDIA', c8: 'LGLSI A TD1 TP1', grade: '10.25', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F6A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'MULTIMEDIA', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F6A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'MULTIMEDIA', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F6A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'MULTIMEDIA', c8: 'LGLSI A TD1 TP1', grade: '10.25', c10: 'DAGAHRI ADEM', c11: '13521112' },
-
-    { c1: 'e1', c2: 'F7A', c3: '6001464', c4: '60014640', c5: '1', type: 'Examen', subject: 'ARCHITECTURE', c8: 'LGLSI A TD1 TP1', grade: '3.0', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F7A', c3: '6001464', c4: '60014640', c5: '1', type: 'DS', subject: 'ARCHITECTURE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F7A', c3: '6001464', c4: '60014640', c5: '1', type: 'TP', subject: 'ARCHITECTURE', c8: 'LGLSI A TD1 TP1', grade: 'N/A', c10: 'DAGAHRI ADEM', c11: '13521112' },
-    { c1: 'e1', c2: 'F7A', c3: '6001464', c4: '60014640', c5: '1', type: 'Moyenne', subject: 'ARCHITECTURE', c8: 'LGLSI A TD1 TP1', grade: '3.00', c10: 'DAGAHRI ADEM', c11: '13521112' },
+  const s1Data = [
+    { code: 'F1A', matId: '6013241', subject: 'ANALYSE', grade: '15.0' },
+    { code: 'F2A', matId: '6014522', subject: 'ALGEBRE', grade: '14.5' },
+    { code: 'F3A', matId: '6011983', subject: 'PROGRAMMATION', grade: '15.0' },
+    { code: 'F4A', matId: '6018744', subject: 'ANGLAIS', grade: '14.0' },
+    { code: 'F5A', matId: '6010095', subject: 'TECHNIQUES DE COMMUNICATION', grade: '12.0' },
+    { code: 'F6A', matId: '6015566', subject: 'MULTIMEDIA', grade: '10.25' },
+    { code: 'F7A', matId: '6013217', subject: 'ARCHITECTURE', grade: '8.5' },
+    { code: 'F8A', matId: '6014428', subject: 'LOGIQUE FORMELLE', grade: '9.0' },
+    { code: 'F9A', matId: '6019919', subject: 'SYSTEME D’EXPLOITATION 1', grade: '8.0' },
+    { code: 'F10A', matId: '6017720', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', grade: '8.85' },
   ];
+
+  const s2Data = [
+    { code: 'F1B', matId: '6024151', subject: 'ANALYSE', grade: '16.0' },
+    { code: 'F2B', matId: '6027842', subject: 'ALGEBRE', grade: '15.5' },
+    { code: 'F3B', matId: '6021193', subject: 'PROGRAMMATION PYTHON', grade: '17.5' },
+    { code: 'F4B', matId: '6029984', subject: 'PROGRAMMATION C', grade: '10.5' },
+    { code: 'F5B', matId: '6023345', subject: 'ALGORITHMIQUE, STRUCTURE DE DONNEES ET COMPLEXITE 2', grade: '9.5' },
+    { code: 'F6B', matId: '6028816', subject: 'FONDEMENTS DES BASES DE DONNEES', grade: '8.5' },
+    { code: 'F7B', matId: '6022277', subject: 'ATELIER DE PROGRAMMATION 2 ET SYSTEME', grade: '8.5' },
+    { code: 'F8B', matId: '6025538', subject: 'SYSTEME D\'EXPLOITATION 2', grade: '6.4' },
+    { code: 'F9B', matId: '6026619', subject: 'FRANCAIS', grade: '0.0 (Abs)' },
+    { code: 'F10B', matId: '6027720', subject: 'ANGLAIS', grade: '0.0 (Abs)' },
+    { code: 'F11B', matId: '6029931', subject: 'CERTIFICATION C2I', grade: '0.0 (Abs)' },
+  ];
+
+  const generateRows = (data: typeof s1Data) => {
+    const rows: any[] = [];
+    data.forEach(d => {
+      // Create a deterministic but different epreuve ID
+      const fakeEpreuveId = (Number(d.matId) * 3 + 12345).toString();
+      
+      rows.push({
+        c1: 'e1', c2: d.code, c3: d.matId, c4: fakeEpreuveId, c5: '1',
+        type: 'Examen', subject: d.subject, c8: 'LGLSI B TD2 TP2',
+        grade: d.grade, c10: 'DAGAHRI ADEM', c11: '13521112'
+      });
+      rows.push({
+        c1: 'e1', c2: d.code, c3: d.matId, c4: fakeEpreuveId, c5: '1',
+        type: 'Moyenne', subject: d.subject, c8: 'LGLSI B TD2 TP2',
+        grade: d.grade === '0.0 (Abs)' ? '0.00' : Number(d.grade).toFixed(2),
+        c10: 'DAGAHRI ADEM', c11: '13521112'
+      });
+    });
+    return rows;
+  };
+
+  const activeGradesData = generateRows(activeSemester === 'S1' ? s1Data : s2Data);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 print:static print:block print:p-0">
@@ -221,26 +220,59 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
       ) : (
         <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto p-8 relative z-10 border-2 border-black shadow-2xl print:border-0 print:shadow-none print:max-h-none print:overflow-visible print:p-0">
           <div className="absolute top-4 right-4 flex items-center gap-4 print:hidden">
-            <button 
-              onClick={() => window.print()} 
-              className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm font-medium"
-            >
-              <Printer size={16} />
-              Imprimer (PDF)
-            </button>
             <button onClick={handleClose} className="text-black hover:text-gray-600 p-1">
               <X size={24} />
             </button>
           </div>
           
-          <div className="mb-6 print:mt-0 mt-12">
-            <h2 className="text-xl font-bold uppercase text-black">CD-NETU SPECIALITE L EN SCIENCES INFORMATIQUES</h2>
-            <div className="flex justify-between items-end mt-4 border-b-2 border-black pb-2">
-              <div className="text-sm text-black font-medium">
-                Étudiant: DAGAHRI ADEM | Matricule: 13521112
+          <div className="mb-6 flex gap-4 print:hidden">
+            <button 
+              onClick={() => setActiveSemester('S1')}
+              className={`px-4 py-2 text-sm font-bold border-2 border-black transition-colors ${activeSemester === 'S1' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'}`}
+            >
+              Semestre 1
+            </button>
+            <button 
+              onClick={() => setActiveSemester('S2')}
+              className={`px-4 py-2 text-sm font-bold border-2 border-black transition-colors ${activeSemester === 'S2' ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'}`}
+            >
+              Semestre 2
+            </button>
+            <button 
+              onClick={() => window.print()} 
+              className="ml-auto flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm font-medium"
+            >
+              <Printer size={16} />
+              Imprimer {activeSemester} (PDF)
+            </button>
+          </div>
+          
+          <div className="mb-6 print:mt-0">
+            {/* Official Logo */}
+            <div className="flex justify-center mb-6">
+              <img src="https://i.imgur.com/zoCEhek.jpeg" alt="Logo FSG" className="h-28 object-contain grayscale" />
+            </div>
+
+            <h2 className="text-xl font-bold uppercase text-black text-center mb-4">
+              Relevé de notes - {activeSemester === 'S1' ? 'Semestre 1' : 'Semestre 2'}<br/>
+              <span className="text-lg">CD-NETU SPECIALITE L EN SCIENCES INFORMATIQUES</span>
+            </h2>
+            
+            <div className="flex flex-col mt-4 border-b-2 border-black pb-4">
+              <div className="text-sm text-black font-medium mb-3">
+                Étudiant: DAGAHRI ADEM | Matricule: 13521112 | Régime: Dérogataire (Candidat Libre)
               </div>
-              <div className="text-lg font-bold text-black">
-                Moyenne Générale: 11.51
+              <div className="bg-gray-100 p-3 border border-black text-sm">
+                {activeSemester === 'S1' ? (
+                  <div className="font-bold">Moyenne S1: 11.51</div>
+                ) : (
+                  <div className="grid grid-cols-4 gap-4">
+                    <div><span className="font-bold">Moyenne S1:</span> 11.51</div>
+                    <div><span className="font-bold">Moyenne S2:</span> 8.40</div>
+                    <div><span className="font-bold">Moyenne Annuelle:</span> 9.95</div>
+                    <div><span className="font-bold">Résultat:</span> <span className="text-red-700 font-bold">Refusé</span></div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -262,7 +294,7 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
               </tr>
             </thead>
             <tbody>
-              {rawGradesData.map((grade, idx) => (
+              {activeGradesData.map((grade, idx) => (
                 <tr key={idx} className={`hover:bg-gray-50 print:hover:bg-transparent ${grade.type === 'Moyenne' ? 'bg-gray-200 font-bold print:bg-gray-200' : ''}`}>
                   <td className="border border-black py-1 px-2">{grade.c1}</td>
                   <td className="border border-black py-1 px-2">{grade.c2}</td>
