@@ -13,12 +13,18 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeSemester, setActiveSemester] = useState<'S1' | 'S2'>('S2');
+  const [captchaStatus, setCaptchaStatus] = useState<'idle' | 'loading' | 'success'>('idle');
 
   if (!isOpen) return null;
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (captchaStatus !== 'success') {
+      setError('Veuillez vérifier que vous êtes humain.');
+      return;
+    }
     
     if (username === 'daghari adem' && password === 'Jesuis123') {
       setIsLoggedIn(true);
@@ -32,20 +38,29 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
     setPassword('');
     setError('');
     setIsLoggedIn(false);
+    setCaptchaStatus('idle');
     onClose();
   };
 
+  const handleCaptchaClick = () => {
+    if (captchaStatus !== 'idle') return;
+    setCaptchaStatus('loading');
+    setTimeout(() => {
+      setCaptchaStatus('success');
+    }, 1500);
+  };
+
   const s1Data = [
-    { code: 'F1A', matId: '6013241', subject: 'ANALYSE', grade: '15.0' },
-    { code: 'F2A', matId: '6014522', subject: 'ALGEBRE', grade: '14.5' },
-    { code: 'F3A', matId: '6011983', subject: 'PROGRAMMATION', grade: '15.0' },
-    { code: 'F4A', matId: '6018744', subject: 'ANGLAIS', grade: '14.0' },
-    { code: 'F5A', matId: '6010095', subject: 'TECHNIQUES DE COMMUNICATION', grade: '12.0' },
-    { code: 'F6A', matId: '6015566', subject: 'MULTIMEDIA', grade: '10.25' },
-    { code: 'F7A', matId: '6013217', subject: 'ARCHITECTURE', grade: '8.5' },
-    { code: 'F8A', matId: '6014428', subject: 'LOGIQUE FORMELLE', grade: '9.0' },
-    { code: 'F9A', matId: '6019919', subject: 'SYSTEME D’EXPLOITATION 1', grade: '8.0' },
-    { code: 'F10A', matId: '6017720', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', grade: '8.85' },
+    { code: 'F1A', matId: '6001464', subject: 'ANALYSE', grade: '16.0' },
+    { code: 'F2A', matId: '6001465', subject: 'ALGEBRE', grade: '17.5' },
+    { code: 'F3A', matId: '6001466', subject: 'PROGRAMMATION', grade: '17.0' },
+    { code: 'F4A', matId: '6001467', subject: 'ANGLAIS', grade: '18.0' },
+    { code: 'F5A', matId: '6001468', subject: 'TECHNIQUES DE COMMUNICATION', grade: '14.5' },
+    { code: 'F6A', matId: '6001469', subject: 'MULTIMEDIA', grade: '10.25' },
+    { code: 'F7A', matId: '6001470', subject: 'ARCHITECTURE', grade: '3.0' },
+    { code: 'F8A', matId: '6001471', subject: 'LOGIQUE FORMELLE', grade: '3.0' },
+    { code: 'F9A', matId: '6001472', subject: 'SYSTEME D’EXPLOITATION 1', grade: '2.5' },
+    { code: 'F10A', matId: '6001473', subject: 'SYSTEMES LOGIQUES ET ARCHITECTURE DES ORDINATEURS', grade: '3.5' },
   ];
 
   const s2Data = [
@@ -150,8 +165,23 @@ export default function ExtranetModal({ isOpen, onClose }: ExtranetModalProps) {
                 {/* Fake Cloudflare CAPTCHA */}
                 <div className="border border-gray-300 rounded p-4 flex items-center justify-between bg-[#f9f9f9]">
                   <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border bg-white border-gray-400 rounded-sm cursor-pointer hover:border-gray-500 flex items-center justify-center"></div>
-                    <span className="text-sm text-gray-800">Vérifiez que vous êtes humain.</span>
+                    {captchaStatus === 'idle' && (
+                      <div 
+                        onClick={handleCaptchaClick}
+                        className="w-5 h-5 border bg-white border-gray-400 rounded-sm cursor-pointer hover:border-gray-500 flex items-center justify-center transition-colors"
+                      ></div>
+                    )}
+                    {captchaStatus === 'loading' && (
+                      <div className="w-5 h-5 border-2 border-[#f48120] border-t-transparent rounded-full animate-spin"></div>
+                    )}
+                    {captchaStatus === 'success' && (
+                      <div className="w-5 h-5 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                      </div>
+                    )}
+                    <span className="text-sm text-gray-800">
+                      {captchaStatus === 'success' ? 'Succès !' : 'Vérifiez que vous êtes humain.'}
+                    </span>
                   </div>
                   <div className="text-[9px] text-gray-500 text-right flex flex-col items-center">
                     <div className="flex items-center gap-1 mb-0.5">
